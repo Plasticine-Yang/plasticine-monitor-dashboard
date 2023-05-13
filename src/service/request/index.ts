@@ -5,6 +5,14 @@ const { url, proxyPattern } = getServiceEnvConfig(import.meta.env);
 
 const isHttpProxy = import.meta.env.VITE_HTTP_PROXY === 'Y';
 
-export const request = createRequest({ baseURL: isHttpProxy ? proxyPattern : url });
+export const request = createRequest(
+  { baseURL: isHttpProxy ? proxyPattern : url },
+  {
+    codeKey: 'code',
+    dataKey: 'data',
+    msgKey: 'message',
+    successCode: 0
+  }
+);
 
 export const mockRequest = createRequest({ baseURL: '/mock' });
