@@ -63,6 +63,8 @@ interface ImportMetaEnv {
   readonly VITE_HASH_ROUTE?: 'Y' | 'N';
   /** 是否是部署的vercel */
   readonly VITE_VERCEL?: 'Y' | 'N';
+  /** plasticine-monitor sdk url */
+  readonly VITE_PLASTICINE_MONITOR_SDK_URL?: string;
 }
 
 interface ImportMeta {
