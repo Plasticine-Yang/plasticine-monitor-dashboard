@@ -18,6 +18,7 @@
 import { computed, reactive, ref, watch } from 'vue';
 import type { FormInst, FormItemRule } from 'naive-ui';
 import { createRequiredFormRule } from '@/utils';
+import { apiCreateProject, apiEditProject } from '~/src/service/api';
 
 export interface Props {
   /** 弹窗可见性 */
@@ -43,6 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 interface Emits {
   (e: 'update:visible', visible: boolean): void;
+  (e: 'refresh'): void;
 }
 
 const emit = defineEmits<Emits>();
@@ -69,7 +71,7 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Pick<ProjectManagement.Project, 'name'>;
+type FormModel = ProjectManagement.CreateOrEditProjectDTO;
 
 const formModel = reactive<FormModel>(createDefaultFormModel());
 
@@ -105,8 +107,25 @@ function handleUpdateFormModelByModalType() {
 
 async function handleSubmit() {
   await formRef.value?.validate();
-  window.$message?.success('新增成功!');
-  closeModal();
+
+  switch (props.type) {
+    case 'add':
+      await apiCreateProject(formModel);
+      window.$message?.success('创建成功！');
+      closeModal();
+      emit('refresh');
+      break;
+
+    case 'edit':
+      await apiEditProject(props.dataForEdit!.id, { name: formModel.name });
+      window.$message?.success('编辑成功！');
+      closeModal();
+      emit('refresh');
+      break;
+
+    default:
+      break;
+  }
 }
 
 watch(

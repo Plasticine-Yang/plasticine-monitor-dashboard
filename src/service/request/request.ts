@@ -4,7 +4,7 @@ import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { useBoolean, useLoading } from '@/hooks';
 import CustomAxiosInstance from './instance';
 
-type RequestMethod = 'get' | 'post' | 'put' | 'delete';
+type RequestMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 interface RequestParam {
   url: string;
@@ -62,6 +62,7 @@ export function createRequest(axiosConfig: AxiosRequestConfig, backendConfig?: S
   function post<T>(url: string, data?: any, config?: AxiosRequestConfig) {
     return asyncRequest<T>({ url, method: 'post', data, axiosConfig: config });
   }
+
   /**
    * put请求
    * @param url - 请求地址
@@ -73,18 +74,34 @@ export function createRequest(axiosConfig: AxiosRequestConfig, backendConfig?: S
   }
 
   /**
+   * patch请求
+   * @param url - 请求地址
+   * @param data - 请求的body的data
+   * @param config - axios配置
+   */
+  function patch<T>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return asyncRequest<T>({ url, method: 'patch', data, axiosConfig: config });
+  }
+
+  /**
    * delete请求
    * @param url - 请求地址
    * @param config - axios配置
    */
-  function handleDelete<T>(url: string, config?: AxiosRequestConfig) {
-    return asyncRequest<T>({ url, method: 'delete', axiosConfig: config });
+  function handleDelete<T>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return asyncRequest<T>({
+      url,
+      method: 'delete',
+      data,
+      axiosConfig: config
+    });
   }
 
   return {
     get,
     post,
     put,
+    patch,
     delete: handleDelete
   };
 }
@@ -132,9 +149,13 @@ export function createHookRequest(axiosConfig: AxiosRequestConfig, backendConfig
     const method = param.method || 'get';
     const { instance } = customInstance;
 
-    getRequestResponse({ instance, method, url, data: param.data, config: param.axiosConfig }).then(
-      handleRequestResult
-    );
+    getRequestResponse({
+      instance,
+      method,
+      url,
+      data: param.data,
+      config: param.axiosConfig
+    }).then(handleRequestResult);
 
     return {
       data,
@@ -199,7 +220,7 @@ async function getRequestResponse(params: {
   const { instance, method, url, data, config } = params;
 
   let res: any;
-  if (method === 'get' || method === 'delete') {
+  if (method === 'get') {
     res = await instance[method](url, config);
   } else {
     res = await instance[method](url, data, config);

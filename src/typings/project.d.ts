@@ -3,4 +3,6 @@ declare namespace ProjectManagement {
     id: string;
     name: string;
   }
+
+  type CreateOrEditProjectDTO = Omit<Project, 'id'>;
 }

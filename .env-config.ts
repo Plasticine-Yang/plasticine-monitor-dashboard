@@ -4,13 +4,13 @@ type ServiceEnv = Record<ServiceEnvType, ServiceEnvConfig>;
 /** 不同请求服务的环境配置 */
 const serviceEnv: ServiceEnv = {
   dev: {
-    url: 'http://localhost:8080'
+    url: 'http://localhost:8868/api/v1'
   },
   test: {
-    url: 'http://localhost:8080'
+    url: 'http://localhost:8080/api/v1'
   },
   prod: {
-    url: 'http://localhost:8080'
+    url: 'http://localhost:8888/api/v1'
   }
 };
 
