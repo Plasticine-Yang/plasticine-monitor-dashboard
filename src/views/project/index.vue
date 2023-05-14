@@ -50,7 +50,7 @@
 import type { Ref } from 'vue';
 import { unref, onBeforeMount, ref } from 'vue';
 import type { DataTableColumns, DataTableRowKey } from 'naive-ui';
-import { NPopconfirm, NButton, NPopover, NSpace } from 'naive-ui';
+import { NTag, NPopconfirm, NButton, NPopover, NSpace } from 'naive-ui';
 import { useClipboard } from '@/hooks';
 import { apiDeleteProject, apiDeleteProjects, apiGetAllProjects } from '~/src/service/api';
 import type { ModalType } from './components/project-action-modal.vue';
@@ -67,12 +67,26 @@ const columns: Ref<DataTableColumns<ProjectManagement.Project>> = ref([
   {
     key: 'id',
     title: 'id',
-    align: 'left'
+    align: 'left',
+    render: row => {
+      return (
+        <NTag type="success" bordered={false}>
+          {row.id}
+        </NTag>
+      );
+    }
   },
   {
     key: 'name',
     title: '项目名',
-    align: 'left'
+    align: 'left',
+    render: row => {
+      return (
+        <NTag type="info" bordered={false}>
+          {row.name}
+        </NTag>
+      );
+    }
   },
   {
     key: 'actions',
