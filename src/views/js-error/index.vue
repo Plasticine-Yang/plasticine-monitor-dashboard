@@ -4,7 +4,8 @@
       <!-- 顶部操作按钮区域 -->
       <n-space class="pb-12px" justify="space-between">
         <!-- 左侧 -->
-        <n-space>
+        <n-space align="center">
+          <!-- 项目筛选 -->
           <n-space>
             <n-tag type="primary" size="large" :bordered="false">项目</n-tag>
             <n-select
@@ -12,6 +13,19 @@
               :options="projectOptions"
               :consistent-menu-width="false"
               @update:value="handleSelectedProjectIdUpdate"
+            />
+          </n-space>
+
+          <n-divider vertical />
+
+          <!-- 时间筛选 -->
+          <n-space>
+            <n-tag type="primary" size="large" :bordered="false">时间</n-tag>
+            <n-select
+              v-model:value="selectedTimeRange"
+              :options="timeRangeOptions"
+              :consistent-menu-width="false"
+              @update:value="handleSelectedTimeUpdate"
             />
           </n-space>
         </n-space>
@@ -32,11 +46,12 @@ import { onBeforeMount, ref } from 'vue';
 import type { DataTableColumns } from 'naive-ui';
 import { NButton, NEllipsis, NSpace, NTag } from 'naive-ui';
 import dayjs from 'dayjs';
-import { useProjectSelect } from '~/src/hooks';
+import { useProjectSelect, useTimeRangeSelect } from '~/src/hooks';
 import { apiGetAllJSErrorEvents } from '~/src/service/api';
 import type { JSErrorManagement } from '~/src/typings/js-error';
 
 const { projectOptions, selectedProjectId, loadProjectOptions } = useProjectSelect();
+const { timeRangeOptions, selectedTimeRange } = useTimeRangeSelect();
 
 const tableLoading = ref(false);
 const jsErrorList = ref<JSErrorManagement.JSErrorEvent[]>([]);
@@ -161,7 +176,7 @@ const columns: Ref<DataTableColumns<JSErrorManagement.JSErrorEvent>> = ref([
 async function refreshTable() {
   tableLoading.value = true;
 
-  const fetchedJSErrorEvents = await apiGetAllJSErrorEvents(selectedProjectId.value);
+  const fetchedJSErrorEvents = await apiGetAllJSErrorEvents(selectedProjectId.value, selectedTimeRange.value);
 
   jsErrorList.value = fetchedJSErrorEvents;
   tableLoading.value = false;
@@ -172,6 +187,10 @@ function initTable() {
 }
 
 function handleSelectedProjectIdUpdate() {
+  refreshTable();
+}
+
+function handleSelectedTimeUpdate() {
   refreshTable();
 }
 
