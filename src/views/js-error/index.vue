@@ -4,7 +4,17 @@
       <!-- 顶部操作按钮区域 -->
       <n-space class="pb-12px" justify="space-between">
         <!-- 左侧 -->
-        <n-space> </n-space>
+        <n-space>
+          <n-space>
+            <n-tag type="primary" size="large" :bordered="false">项目</n-tag>
+            <n-select
+              v-model:value="selectedProjectId"
+              :options="projectOptions"
+              :consistent-menu-width="false"
+              @update:value="handleSelectedProjectIdUpdate"
+            />
+          </n-space>
+        </n-space>
 
         <!-- 右侧 -->
         <n-space> </n-space>
@@ -20,10 +30,13 @@
 import type { Ref } from 'vue';
 import { onBeforeMount, ref } from 'vue';
 import type { DataTableColumns } from 'naive-ui';
-import { NEllipsis, NButton, NSpace, NTag } from 'naive-ui';
+import { NButton, NEllipsis, NSpace, NTag } from 'naive-ui';
 import dayjs from 'dayjs';
+import { useProjectSelect } from '~/src/hooks';
 import { apiGetAllJSErrorEvents } from '~/src/service/api';
 import type { JSErrorManagement } from '~/src/typings/js-error';
+
+const { projectOptions, selectedProjectId, loadProjectOptions } = useProjectSelect();
 
 const tableLoading = ref(false);
 const jsErrorList = ref<JSErrorManagement.JSErrorEvent[]>([]);
@@ -148,13 +161,17 @@ const columns: Ref<DataTableColumns<JSErrorManagement.JSErrorEvent>> = ref([
 async function refreshTable() {
   tableLoading.value = true;
 
-  const fetchedJSErrorEvents = await apiGetAllJSErrorEvents('64607b2af3f06f90577fed12');
+  const fetchedJSErrorEvents = await apiGetAllJSErrorEvents(selectedProjectId.value);
 
   jsErrorList.value = fetchedJSErrorEvents;
   tableLoading.value = false;
 }
 
 function initTable() {
+  return refreshTable();
+}
+
+function handleSelectedProjectIdUpdate() {
   refreshTable();
 }
 
@@ -162,8 +179,9 @@ function handleCheckSourceMap(jsErrorEvent: JSErrorManagement.JSErrorEvent) {
   console.log('TODO - 查看源码上下文', jsErrorEvent);
 }
 
-onBeforeMount(() => {
-  initTable();
+onBeforeMount(async () => {
+  await loadProjectOptions();
+  await initTable();
 });
 </script>
 
