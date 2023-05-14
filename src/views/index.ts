@@ -36,6 +36,7 @@ export const views: Record<
   'multi-menu_first_second': () => import('./multi-menu/first/second/index.vue'),
   'multi-menu_first_second-new_third': () => import('./multi-menu/first/second-new/third/index.vue'),
   'not-found': () => import('./_builtin/not-found/index.vue'),
+  performance: () => import('./performance/index.vue'),
   plugin_charts_antv: () => import('./plugin/charts/antv/index.vue'),
   plugin_charts_echarts: () => import('./plugin/charts/echarts/index.vue'),
   plugin_copy: () => import('./plugin/copy/index.vue'),
