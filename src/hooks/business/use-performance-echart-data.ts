@@ -1,11 +1,11 @@
 import { ref } from 'vue';
 
 export default function usePerformanceEchartData() {
-  const categories = ref<string[]>([]);
-  const lineData = ref<number[]>([]);
+  const xAxis = ref<string[]>([]);
+  const yAxis = ref<number[]>([]);
 
   return {
-    categories,
-    lineData
+    xAxis,
+    yAxis
   };
 }

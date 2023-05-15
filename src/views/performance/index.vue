@@ -38,40 +38,16 @@
     <!-- 图表 -->
     <n-space vertical>
       <!-- FP -->
-      <n-card :bordered="false" class="rounded-16px shadow-sm">
-        <template #header>
-          <n-tag type="primary" :bordered="false">FP(First Paint)</n-tag>
-        </template>
-
-        <div ref="fpLineChartRef" class="h-600px"></div>
-      </n-card>
+      <echarts-line title="FP(First Paint)" :x-axis="fpXAxis" :y-axis="fpYAxis" />
 
       <!-- FCP -->
-      <n-card :bordered="false" class="rounded-16px shadow-sm">
-        <template #header>
-          <n-tag type="primary" :bordered="false">FCP(First Contentful Paint)</n-tag>
-        </template>
-
-        <div ref="fcpLineChartRef" class="h-600px"></div>
-      </n-card>
+      <echarts-line title="FCP(First Contentful Paint)" :x-axis="fcpXAxis" :y-axis="fcpYAxis" />
 
       <!-- LCP -->
-      <n-card :bordered="false" class="rounded-16px shadow-sm">
-        <template #header>
-          <n-tag type="primary" :bordered="false">LCP(Largest Contentful Paint)</n-tag>
-        </template>
-
-        <div ref="lcpLineChartRef" class="h-600px"></div>
-      </n-card>
+      <echarts-line title="LCP(Largest Contentful Paint)" :x-axis="lcpXAxis" :y-axis="lcpYAxis" />
 
       <!-- FID -->
-      <n-card :bordered="false" class="rounded-16px shadow-sm">
-        <template #header>
-          <n-tag type="primary" :bordered="false">FID(First Input Delay)</n-tag>
-        </template>
-
-        <div ref="fidLineChartRef" class="h-600px"></div>
-      </n-card>
+      <echarts-line title="FID(First Input Delay)" :x-axis="fidXAxis" :y-axis="fidYAxis" />
     </n-space>
   </n-space>
 </template>
@@ -79,37 +55,33 @@
 <script setup lang="tsx">
 import { onBeforeMount } from 'vue';
 import { NSpace, NTag } from 'naive-ui';
-import { useEchartLine, usePerformanceEchartData, useProjectSelect, useTimeRangeSelect } from '~/src/hooks';
+import EchartsLine from '~/src/components/business/echarts-line.vue';
+import { usePerformanceEchartData, useProjectSelect, useTimeRangeSelect } from '~/src/hooks';
 import { apiGetAllPerformanceEventLineChart } from '~/src/service';
 
 const { projectOptions, selectedProjectId, loadProjectOptions } = useProjectSelect();
 const { timeRangeOptions, selectedTimeRange } = useTimeRangeSelect();
 
-const { categories: fpCategories, lineData: fpLineData } = usePerformanceEchartData();
-const { categories: fcpCategories, lineData: fcpLineData } = usePerformanceEchartData();
-const { categories: lcpCategories, lineData: lcpLineData } = usePerformanceEchartData();
-const { categories: fidCategories, lineData: fidLineData } = usePerformanceEchartData();
-
-const { domRef: fpLineChartRef } = useEchartLine(fpCategories, fpLineData);
-const { domRef: fcpLineChartRef } = useEchartLine(fcpCategories, fcpLineData);
-const { domRef: lcpLineChartRef } = useEchartLine(lcpCategories, lcpLineData);
-const { domRef: fidLineChartRef } = useEchartLine(fidCategories, fidLineData);
+const { xAxis: fpXAxis, yAxis: fpYAxis } = usePerformanceEchartData();
+const { xAxis: fcpXAxis, yAxis: fcpYAxis } = usePerformanceEchartData();
+const { xAxis: lcpXAxis, yAxis: lcpYAxis } = usePerformanceEchartData();
+const { xAxis: fidXAxis, yAxis: fidYAxis } = usePerformanceEchartData();
 
 async function refreshAllCharts() {
   const data = await apiGetAllPerformanceEventLineChart(selectedProjectId.value, selectedTimeRange.value);
 
   if (data !== null) {
-    fpCategories.value = data.FP.categories;
-    fpLineData.value = data.FP.values;
+    fpXAxis.value = data.FP.xAxis;
+    fpYAxis.value = data.FP.yAxis;
 
-    fcpCategories.value = data.FCP.categories;
-    fcpLineData.value = data.FCP.values;
+    fcpXAxis.value = data.FCP.xAxis;
+    fcpYAxis.value = data.FCP.yAxis;
 
-    lcpCategories.value = data.LCP.categories;
-    lcpLineData.value = data.LCP.values;
+    lcpXAxis.value = data.LCP.xAxis;
+    lcpYAxis.value = data.LCP.yAxis;
 
-    fidCategories.value = data.FID.categories;
-    fidLineData.value = data.FID.values;
+    fidXAxis.value = data.FID.xAxis;
+    fidYAxis.value = data.FID.yAxis;
   }
 }
 

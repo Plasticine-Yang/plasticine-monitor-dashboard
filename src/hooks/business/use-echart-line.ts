@@ -3,21 +3,23 @@ import { computed } from 'vue';
 import type { ECOption } from '~/src/composables';
 import { useEcharts } from '~/src/composables';
 
-export default function useEchartLine(categories: Ref<string[]>, lineData: Ref<number[]>) {
+export default function useEchartLine(xAxis: Ref<string[]>, yAxis: Ref<number[]>) {
   const lineOption = computed(() => getLineOption());
   const { domRef } = useEcharts(lineOption);
 
   function getLineOption(): ECOption {
     const options: ECOption = {
       backgroundColor: '#0f375f',
+      // @ts-ignore
       tooltip: {
         trigger: 'axis',
+        valueFormatter: (value: number) => `${value.toFixed(2)} ms`,
         axisPointer: {
           type: 'shadow'
         }
       },
       xAxis: {
-        data: categories.value,
+        data: xAxis.value,
         axisLine: {
           lineStyle: {
             color: '#ccc'
@@ -25,7 +27,8 @@ export default function useEchartLine(categories: Ref<string[]>, lineData: Ref<n
         }
       },
       yAxis: {
-        splitLine: { show: false },
+        name: '单位：ms',
+        type: 'value',
         axisLine: {
           lineStyle: {
             color: '#ccc'
@@ -34,26 +37,13 @@ export default function useEchartLine(categories: Ref<string[]>, lineData: Ref<n
       },
       series: [
         {
-          name: 'line',
+          name: '性能数据',
           type: 'line',
           smooth: true,
           showAllSymbol: true,
           symbol: 'emptyCircle',
           symbolSize: 15,
-          data: lineData.value
-        },
-        {
-          name: 'dotted',
-          type: 'pictorialBar',
-          symbol: 'rect',
-          itemStyle: {
-            color: '#0f375f'
-          },
-          symbolRepeat: true,
-          symbolSize: [12, 4],
-          symbolMargin: 1,
-          z: -10,
-          data: lineData.value
+          data: yAxis.value
         }
       ]
     };
