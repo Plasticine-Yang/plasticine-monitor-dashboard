@@ -37,6 +37,9 @@
 
     <!-- 图表 -->
     <n-space vertical>
+      <!-- TTI -->
+      <echarts-line title="TTI(Time To Interactive)" :x-axis="ttiXAxis" :y-axis="ttiYAxis" />
+
       <!-- FP -->
       <echarts-line title="FP(First Paint)" :x-axis="fpXAxis" :y-axis="fpYAxis" />
 
@@ -66,6 +69,7 @@ const { xAxis: fpXAxis, yAxis: fpYAxis } = usePerformanceEchartData();
 const { xAxis: fcpXAxis, yAxis: fcpYAxis } = usePerformanceEchartData();
 const { xAxis: lcpXAxis, yAxis: lcpYAxis } = usePerformanceEchartData();
 const { xAxis: fidXAxis, yAxis: fidYAxis } = usePerformanceEchartData();
+const { xAxis: ttiXAxis, yAxis: ttiYAxis } = usePerformanceEchartData();
 
 async function refreshAllCharts() {
   const data = await apiGetAllPerformanceEventLineChart(selectedProjectId.value, selectedTimeRange.value);
@@ -82,6 +86,9 @@ async function refreshAllCharts() {
 
     fidXAxis.value = data.FID.xAxis;
     fidYAxis.value = data.FID.yAxis;
+
+    ttiXAxis.value = data.TTI.xAxis;
+    ttiYAxis.value = data.TTI.yAxis;
   }
 }
 
