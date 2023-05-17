@@ -1,4 +1,5 @@
 import { request } from '../request';
+import type { PageManagement } from '~/src/typings/page-management';
 
 export async function apiGetPageInfoList(query: SharedQuery) {
   const { projectId } = query;

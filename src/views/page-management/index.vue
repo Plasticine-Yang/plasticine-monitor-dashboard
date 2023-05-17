@@ -28,6 +28,8 @@ import type { DataTableColumns } from 'naive-ui';
 import { NSpace, NTag } from 'naive-ui';
 import { useProjectSelect } from '~/src/hooks';
 import { apiGetPageInfoList } from '~/src/service/api';
+import { PerformanceMetricsEnum } from '~/src/enums';
+import type { PageManagement } from '~/src/typings/page-management';
 
 const { projectOptions, selectedProjectId, loadProjectOptions } = useProjectSelect();
 
@@ -48,8 +50,8 @@ const columns: Ref<DataTableColumns<PageManagement.Page>> = ref([
     }
   },
   {
-    key: 'pv',
-    title: 'PV',
+    key: 'PV',
+    title: 'PV(次)',
     align: 'left',
     render: row => {
       return (
@@ -60,13 +62,73 @@ const columns: Ref<DataTableColumns<PageManagement.Page>> = ref([
     }
   },
   {
-    key: 'uv',
-    title: 'UV',
+    key: 'UV',
+    title: 'UV(人)',
     align: 'left',
     render: row => {
       return (
         <NTag type="info" bordered={false}>
           {row.uv}
+        </NTag>
+      );
+    }
+  },
+  {
+    key: PerformanceMetricsEnum.TTI,
+    title: `${PerformanceMetricsEnum.TTI} (ms)`,
+    align: 'left',
+    render: row => {
+      return (
+        <NTag type="info" bordered={false}>
+          {row.performanceMetrics[PerformanceMetricsEnum.TTI].toFixed(2)}
+        </NTag>
+      );
+    }
+  },
+  {
+    key: PerformanceMetricsEnum.FP,
+    title: `${PerformanceMetricsEnum.FP} (ms)`,
+    align: 'left',
+    render: row => {
+      return (
+        <NTag type="info" bordered={false}>
+          {row.performanceMetrics[PerformanceMetricsEnum.FP].toFixed(2)}
+        </NTag>
+      );
+    }
+  },
+  {
+    key: PerformanceMetricsEnum.FCP,
+    title: `${PerformanceMetricsEnum.FCP} (ms)`,
+    align: 'left',
+    render: row => {
+      return (
+        <NTag type="info" bordered={false}>
+          {row.performanceMetrics[PerformanceMetricsEnum.FCP].toFixed(2)}
+        </NTag>
+      );
+    }
+  },
+  {
+    key: PerformanceMetricsEnum.LCP,
+    title: `${PerformanceMetricsEnum.LCP} (ms)`,
+    align: 'left',
+    render: row => {
+      return (
+        <NTag type="info" bordered={false}>
+          {row.performanceMetrics[PerformanceMetricsEnum.LCP].toFixed(2)}
+        </NTag>
+      );
+    }
+  },
+  {
+    key: PerformanceMetricsEnum.FID,
+    title: `${PerformanceMetricsEnum.FID} (ms)`,
+    align: 'left',
+    render: row => {
+      return (
+        <NTag type="info" bordered={false}>
+          {row.performanceMetrics[PerformanceMetricsEnum.FID].toFixed(2)}
         </NTag>
       );
     }
