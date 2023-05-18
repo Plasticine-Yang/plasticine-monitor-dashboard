@@ -1,38 +1,14 @@
 <template>
   <n-space vertical>
     <n-card title="性能数据监控" :bordered="false" class="rounded-16px shadow-sm">
-      <!-- 顶部操作按钮区域 -->
-      <n-space class="pb-12px" justify="space-between">
-        <!-- 左侧 -->
-        <n-space align="center">
-          <!-- 项目筛选 -->
-          <n-space>
-            <n-tag type="primary" size="large" :bordered="false">项目</n-tag>
-            <n-select
-              v-model:value="selectedProjectId"
-              :options="projectOptions"
-              :consistent-menu-width="false"
-              @update:value="handleSelectedProjectIdUpdate"
-            />
-          </n-space>
-
-          <n-divider vertical />
-
-          <!-- 时间筛选 -->
-          <n-space>
-            <n-tag type="primary" size="large" :bordered="false">时间</n-tag>
-            <n-select
-              v-model:value="selectedTimeRange"
-              :options="timeRangeOptions"
-              :consistent-menu-width="false"
-              @update:value="handleSelectedTimeUpdate"
-            />
-          </n-space>
-        </n-space>
-
-        <!-- 右侧 -->
-        <n-space> </n-space>
-      </n-space>
+      <data-filter
+        v-model:project-id="selectedProjectId"
+        v-model:time-range="selectedTimeRange"
+        :project-options="projectOptions"
+        :time-range-options="timeRangeOptions"
+        @update:project-id="handleSelectedProjectIdUpdate"
+        @update:time-range="handleSelectedTimeRangeUpdate"
+      />
     </n-card>
 
     <!-- 图表 -->
@@ -57,7 +33,7 @@
 
 <script setup lang="tsx">
 import { onBeforeMount } from 'vue';
-import { NSpace, NTag } from 'naive-ui';
+import { NSpace } from 'naive-ui';
 import EchartsLine from '~/src/components/business/echarts-line.vue';
 import { usePerformanceEchartData, useProjectSelect, useTimeRangeSelect } from '~/src/hooks';
 import { apiGetAllPerformanceEventLineChart } from '~/src/service';
@@ -96,11 +72,13 @@ function initAllCharts() {
   return refreshAllCharts();
 }
 
-function handleSelectedProjectIdUpdate() {
+function handleSelectedProjectIdUpdate(projectId: string) {
+  selectedProjectId.value = projectId;
   refreshAllCharts();
 }
 
-function handleSelectedTimeUpdate() {
+function handleSelectedTimeRangeUpdate(timeRange: string) {
+  selectedTimeRange.value = timeRange;
   refreshAllCharts();
 }
 
