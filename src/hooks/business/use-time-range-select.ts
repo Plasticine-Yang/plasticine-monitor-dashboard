@@ -27,6 +27,10 @@ export default function useTimeRangeSelect() {
     {
       label: '过去 7 天',
       value: '7d'
+    },
+    {
+      label: '全部',
+      value: 'all'
     }
   ]);
 
