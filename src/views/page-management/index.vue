@@ -26,6 +26,7 @@ import type { Ref } from 'vue';
 import { onBeforeMount, ref } from 'vue';
 import type { DataTableColumns } from 'naive-ui';
 import { NSpace, NTag } from 'naive-ui';
+import type { TableColumn } from 'naive-ui/es/data-table/src/interface';
 import { useProjectSelect } from '~/src/hooks';
 import { apiGetPageInfoList } from '~/src/service/api';
 import { PerformanceMetricsEnum } from '~/src/enums';
@@ -35,6 +36,22 @@ const { projectOptions, selectedProjectId, loadProjectOptions } = useProjectSele
 
 const tableLoading = ref(false);
 const pageInfoList = ref<PageManagement.Page[]>([]);
+
+const generatePerformanceMetricColumn = (metric: PerformanceMetricsEnum): TableColumn<PageManagement.Page> => {
+  return {
+    key: metric,
+    title: `${metric} (ms)`,
+    align: 'left',
+    render: row => {
+      return (
+        <NTag type="info" bordered={false}>
+          {row.performanceMetrics[metric]?.toFixed(2) ?? '--'}
+        </NTag>
+      );
+    }
+  };
+};
+
 const columns: Ref<DataTableColumns<PageManagement.Page>> = ref([
   {
     key: 'pagePath',
@@ -51,7 +68,7 @@ const columns: Ref<DataTableColumns<PageManagement.Page>> = ref([
   },
   {
     key: 'PV',
-    title: 'PV(次)',
+    title: 'PV (次)',
     align: 'left',
     render: row => {
       return (
@@ -63,7 +80,7 @@ const columns: Ref<DataTableColumns<PageManagement.Page>> = ref([
   },
   {
     key: 'UV',
-    title: 'UV(人)',
+    title: 'UV (人)',
     align: 'left',
     render: row => {
       return (
@@ -73,66 +90,11 @@ const columns: Ref<DataTableColumns<PageManagement.Page>> = ref([
       );
     }
   },
-  {
-    key: PerformanceMetricsEnum.TTI,
-    title: `${PerformanceMetricsEnum.TTI} (ms)`,
-    align: 'left',
-    render: row => {
-      return (
-        <NTag type="info" bordered={false}>
-          {row.performanceMetrics[PerformanceMetricsEnum.TTI].toFixed(2)}
-        </NTag>
-      );
-    }
-  },
-  {
-    key: PerformanceMetricsEnum.FP,
-    title: `${PerformanceMetricsEnum.FP} (ms)`,
-    align: 'left',
-    render: row => {
-      return (
-        <NTag type="info" bordered={false}>
-          {row.performanceMetrics[PerformanceMetricsEnum.FP].toFixed(2)}
-        </NTag>
-      );
-    }
-  },
-  {
-    key: PerformanceMetricsEnum.FCP,
-    title: `${PerformanceMetricsEnum.FCP} (ms)`,
-    align: 'left',
-    render: row => {
-      return (
-        <NTag type="info" bordered={false}>
-          {row.performanceMetrics[PerformanceMetricsEnum.FCP].toFixed(2)}
-        </NTag>
-      );
-    }
-  },
-  {
-    key: PerformanceMetricsEnum.LCP,
-    title: `${PerformanceMetricsEnum.LCP} (ms)`,
-    align: 'left',
-    render: row => {
-      return (
-        <NTag type="info" bordered={false}>
-          {row.performanceMetrics[PerformanceMetricsEnum.LCP].toFixed(2)}
-        </NTag>
-      );
-    }
-  },
-  {
-    key: PerformanceMetricsEnum.FID,
-    title: `${PerformanceMetricsEnum.FID} (ms)`,
-    align: 'left',
-    render: row => {
-      return (
-        <NTag type="info" bordered={false}>
-          {row.performanceMetrics[PerformanceMetricsEnum.FID].toFixed(2)}
-        </NTag>
-      );
-    }
-  }
+  generatePerformanceMetricColumn(PerformanceMetricsEnum.TTI),
+  generatePerformanceMetricColumn(PerformanceMetricsEnum.FP),
+  generatePerformanceMetricColumn(PerformanceMetricsEnum.FCP),
+  generatePerformanceMetricColumn(PerformanceMetricsEnum.LCP),
+  generatePerformanceMetricColumn(PerformanceMetricsEnum.FID)
 ]) as Ref<DataTableColumns<PageManagement.Page>>;
 
 async function refreshTable() {

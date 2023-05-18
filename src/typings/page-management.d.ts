@@ -5,6 +5,6 @@ declare namespace PageManagement {
     pagePath: string;
     pv: number;
     uv: number;
-    performanceMetrics: Record<PerformanceMetricsEnum, number>;
+    performanceMetrics: Partial<Record<PerformanceMetricsEnum, number>>;
   }
 }
