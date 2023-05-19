@@ -18,7 +18,7 @@
 import type { Ref } from 'vue';
 import { onBeforeMount, ref } from 'vue';
 import type { DataTableColumns } from 'naive-ui';
-import { NTag } from 'naive-ui';
+import { NNumberAnimation, NTag } from 'naive-ui';
 import type { TableColumn } from 'naive-ui/es/data-table/src/interface';
 import { PerformanceMetricsEnum } from '~/src/enums';
 import { useProjectSelect } from '~/src/hooks';
@@ -38,7 +38,11 @@ const generatePerformanceMetricColumn = (metric: PerformanceMetricsEnum): TableC
     render: row => {
       return (
         <NTag type="info" bordered={false}>
-          {row.performanceMetrics[metric]?.toFixed(2) ?? '--'}
+          {row.performanceMetrics[metric] ? (
+            <NNumberAnimation to={row.performanceMetrics[metric]} precision={2} />
+          ) : (
+            '--'
+          )}
         </NTag>
       );
     }
@@ -66,7 +70,7 @@ const columns: Ref<DataTableColumns<PageManagement.Page>> = ref([
     render: row => {
       return (
         <NTag type="info" bordered={false}>
-          {row.pv}
+          <NNumberAnimation to={row.pv} />
         </NTag>
       );
     }
@@ -78,7 +82,7 @@ const columns: Ref<DataTableColumns<PageManagement.Page>> = ref([
     render: row => {
       return (
         <NTag type="info" bordered={false}>
-          {row.uv}
+          <NNumberAnimation to={row.uv} />
         </NTag>
       );
     }
