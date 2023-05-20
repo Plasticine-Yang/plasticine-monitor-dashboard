@@ -20,7 +20,7 @@
 import type { Ref } from 'vue';
 import { onBeforeMount, ref } from 'vue';
 import type { DataTableColumns } from 'naive-ui';
-import { NButton, NEllipsis, NSpace, NTag } from 'naive-ui';
+import { NEllipsis, NTag } from 'naive-ui';
 import dayjs from 'dayjs';
 import { useProjectSelect, useTimeRangeSelect } from '~/src/hooks';
 import { apiGetAllJSErrorEvents } from '~/src/service/api';
@@ -131,21 +131,6 @@ const columns: Ref<DataTableColumns<JSErrorManagement.JSErrorEvent>> = ref([
         </NTag>
       );
     }
-  },
-  {
-    key: 'actions',
-    title: '操作',
-    align: 'center',
-    fixed: 'right',
-    render: row => {
-      return (
-        <NSpace justify={'center'}>
-          <NButton type="primary" size="small" onClick={() => handleCheckSourceMap(row)}>
-            查看源码上下文
-          </NButton>
-        </NSpace>
-      );
-    }
   }
 ]) as Ref<DataTableColumns<JSErrorManagement.JSErrorEvent>>;
 
@@ -170,10 +155,6 @@ function handleSelectedProjectIdUpdate(projectId: string) {
 function handleSelectedTimeRangeUpdate(timeRange: string) {
   selectedTimeRange.value = timeRange;
   refreshTable();
-}
-
-function handleCheckSourceMap(jsErrorEvent: JSErrorManagement.JSErrorEvent) {
-  console.log('TODO - 查看源码上下文', jsErrorEvent);
 }
 
 onBeforeMount(async () => {
