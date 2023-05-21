@@ -72,7 +72,7 @@ const renderMeta: Record<UserBehaviorMetricsEnum, any> = {
 
 const handleClick = (userBehavior: UserBehaviorManagement.UserBehavior) => {
   monitorDrawerStore.visible = true;
-  monitorDrawerStore.environmentInfo = {} as any;
+  monitorDrawerStore.environmentInfo = userBehavior.environmentInfo;
 
   switch (userBehavior.name) {
     case UserBehaviorMetricsEnum.Network:

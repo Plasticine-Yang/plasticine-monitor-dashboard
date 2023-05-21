@@ -56,5 +56,6 @@ declare namespace UserBehaviorManagement {
     name: UserBehaviorMetricsEnum;
     value: PageViewMetrics | JSErrorMetrics | NetworkMetrics | ClickMetrics;
     timestamp: number;
+    environmentInfo: EnvironmentInfoManagement.EnvironmentInfo;
   }
 }

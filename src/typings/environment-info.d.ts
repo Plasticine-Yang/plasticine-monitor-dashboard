@@ -8,5 +8,6 @@ declare namespace EnvironmentInfoManagement {
     url: string;
     userId: string;
     sessionId: string;
+    userAgent: string;
   }
 }
