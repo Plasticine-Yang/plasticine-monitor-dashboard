@@ -13,6 +13,17 @@
         />
       </n-space>
 
+      <!-- 页面筛选 -->
+      <n-space v-if="shouldRenderPagePathFilterItem">
+        <n-tag type="primary" size="large" :bordered="false">页面路径</n-tag>
+        <n-select
+          v-model:value="pagePathModelValue"
+          :options="pagePathOptions"
+          :consistent-menu-width="false"
+          @update:value="handleSelectedPagePathUpdate"
+        />
+      </n-space>
+
       <!-- 时间筛选 -->
       <n-space v-if="shouldRenderTimeRangeFilterItem">
         <n-tag type="primary" size="large" :bordered="false">时间</n-tag>
@@ -49,7 +60,7 @@ import { computed } from 'vue';
 import type { SelectOption } from 'naive-ui';
 import { STORAGE_FILTER_ITEM_SESSION_ID, STORAGE_FILTER_ITEM_USER_ID } from '~/src/constants';
 
-type FilterItemType = 'project' | 'timeRange' | 'userId' | 'sessionId';
+type FilterItemType = 'project' | 'timeRange' | 'userId' | 'sessionId' | 'pagePath';
 
 interface Props {
   showFilterButton?: boolean;
@@ -69,6 +80,9 @@ interface Props {
 
   userId?: string;
   sessionId?: string;
+
+  pagePath?: string;
+  pagePathOptions?: SelectOption[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -83,7 +97,10 @@ const props = withDefaults(defineProps<Props>(), {
   timeRangeOptions: () => [],
 
   userId: '',
-  sessionId: ''
+  sessionId: '',
+
+  pagePath: '',
+  pagePathOptions: () => []
 });
 
 interface Emits {
@@ -91,6 +108,7 @@ interface Emits {
   (e: 'update:timeRange', timeRange: string): void;
   (e: 'update:userId', userId: string): void;
   (e: 'update:sessionId', sessionId: string): void;
+  (e: 'update:pagePath', pagePath: string): void;
   (e: 'click-filter-button'): void;
 }
 
@@ -101,6 +119,7 @@ const shouldRenderProjectFilterItem = computed(() => props.filterItemsForDisplay
 const shouldRenderTimeRangeFilterItem = computed(() => props.filterItemsForDisplay.includes('timeRange'));
 const shouldRenderUserIdFilterItem = computed(() => props.filterItemsForDisplay.includes('userId'));
 const shouldRenderSessionIdFilterItem = computed(() => props.filterItemsForDisplay.includes('sessionId'));
+const shouldRenderPagePathFilterItem = computed(() => props.filterItemsForDisplay.includes('pagePath'));
 
 // 暴露给外部的 v-model 数据 -- projectId
 const projectIdModelValue = computed({
@@ -114,6 +133,20 @@ const projectIdModelValue = computed({
 
 const handleSelectedProjectIdUpdate = (newProjectId: string) => {
   projectIdModelValue.value = newProjectId;
+};
+
+// 暴露给外部的 v-model 数据 -- pagePath
+const pagePathModelValue = computed({
+  get() {
+    return props.pagePath;
+  },
+  set(newPagePath) {
+    emit('update:pagePath', newPagePath);
+  }
+});
+
+const handleSelectedPagePathUpdate = (newPagePath: string) => {
+  pagePathModelValue.value = newPagePath;
 };
 
 // 暴露给外部的 v-model 数据 -- timeRange
@@ -142,7 +175,6 @@ const userIdModelValue = computed({
 });
 
 const handleUserIdUpdate = (newUserId: string) => {
-  console.log('update userid');
   userIdModelValue.value = newUserId;
 };
 

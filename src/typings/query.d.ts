@@ -3,4 +3,5 @@ declare interface SharedQuery {
   userId?: string;
   sessionId?: string;
   timeRange?: string;
+  pagePath?: string;
 }

@@ -3,11 +3,14 @@
     <n-card title="性能数据监控" :bordered="false" class="rounded-16px shadow-sm">
       <data-filter
         v-model:project-id="selectedProjectId"
+        v-model:page-path="selectedPagePath"
         v-model:time-range="selectedTimeRange"
+        show-filter-button
+        :filter-items-for-display="['project', 'pagePath', 'timeRange']"
         :project-options="projectOptions"
+        :page-path-options="pagePathOptions"
         :time-range-options="timeRangeOptions"
-        @update:project-id="handleSelectedProjectIdUpdate"
-        @update:time-range="handleSelectedTimeRangeUpdate"
+        @click-filter-button="handleClickFilterButton"
       />
     </n-card>
 
@@ -35,11 +38,12 @@
 import { onBeforeMount } from 'vue';
 import { NSpace } from 'naive-ui';
 import EchartsLine from '~/src/components/business/echarts-line.vue';
-import { usePerformanceEchartData, useProjectSelect, useTimeRangeSelect } from '~/src/hooks';
+import { usePagePathSelect, usePerformanceEchartData, useProjectSelect, useTimeRangeSelect } from '~/src/hooks';
 import { apiGetAllPerformanceEventLineChart } from '~/src/service';
 
 const { projectOptions, selectedProjectId, loadProjectOptions } = useProjectSelect();
 const { timeRangeOptions, selectedTimeRange } = useTimeRangeSelect();
+const { selectedPagePath, pagePathOptions, loadPagePathOptions } = usePagePathSelect(selectedProjectId);
 
 const { xAxis: fpXAxis, yAxis: fpYAxis } = usePerformanceEchartData();
 const { xAxis: fcpXAxis, yAxis: fcpYAxis } = usePerformanceEchartData();
@@ -48,7 +52,11 @@ const { xAxis: fidXAxis, yAxis: fidYAxis } = usePerformanceEchartData();
 const { xAxis: ttiXAxis, yAxis: ttiYAxis } = usePerformanceEchartData();
 
 async function refreshAllCharts() {
-  const data = await apiGetAllPerformanceEventLineChart(selectedProjectId.value, selectedTimeRange.value);
+  const data = await apiGetAllPerformanceEventLineChart({
+    projectId: selectedProjectId.value,
+    pagePath: selectedPagePath.value,
+    timeRange: selectedTimeRange.value
+  });
 
   if (data !== null) {
     fpXAxis.value = data.FP.xAxis;
@@ -72,18 +80,13 @@ function initAllCharts() {
   return refreshAllCharts();
 }
 
-function handleSelectedProjectIdUpdate(projectId: string) {
-  selectedProjectId.value = projectId;
-  refreshAllCharts();
-}
-
-function handleSelectedTimeRangeUpdate(timeRange: string) {
-  selectedTimeRange.value = timeRange;
+function handleClickFilterButton() {
   refreshAllCharts();
 }
 
 onBeforeMount(async () => {
   await loadProjectOptions();
+  await loadPagePathOptions();
   await initAllCharts();
 });
 </script>

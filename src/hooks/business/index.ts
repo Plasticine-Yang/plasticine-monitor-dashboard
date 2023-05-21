@@ -1,6 +1,7 @@
 import useCountDown from './use-count-down';
 import useEchartLine from './use-echart-line';
 import useImageVerify from './use-image-verify';
+import usePagePathSelect from './use-page-path-select';
 import usePerformanceEchartData from './use-performance-echart-data';
 import useProjectSelect from './use-project-select';
 import useSessionIdInput from './use-session-id-input';
@@ -17,5 +18,6 @@ export {
   useEchartLine,
   usePerformanceEchartData,
   useUserIdInput,
-  useSessionIdInput
+  useSessionIdInput,
+  usePagePathSelect
 };
