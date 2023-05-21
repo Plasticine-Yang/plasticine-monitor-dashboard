@@ -16,6 +16,7 @@ declare namespace UserBehaviorManagement {
     timestamp: number;
     headers?: Record<string, string>;
     body?: string;
+    reason?: string;
   }
 
   interface NetworkResponse {

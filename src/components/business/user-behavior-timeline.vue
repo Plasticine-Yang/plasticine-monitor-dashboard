@@ -8,19 +8,26 @@
       :time="formatTimestamp(userBehavior.timestamp)"
     >
       <template #default>
-        <component :is="renderMeta[userBehavior.name].contentComponent" :user-behavior="userBehavior" />
+        <component
+          :is="renderMeta[userBehavior.name].contentComponent"
+          :user-behavior="userBehavior"
+          @click="() => handleClick(userBehavior)"
+        />
       </template>
     </n-timeline-item>
   </n-timeline>
+
+  <monitor-drawer />
 </template>
 
 <script setup lang="tsx">
-import dayjs from 'dayjs';
+import { formatTimestamp } from '@/utils';
 import { UserBehaviorMetricsEnum } from '~/src/enums';
-import UserBehaviorPageView from './user-behavior-page-view.vue';
-import UserBehaviorNetwork from './user-behavior-network.vue';
-import UserBehaviorJSError from './user-behavior-js-error.vue';
+import { useMonitorDrawerStore } from '~/src/store';
 import UserBehaviorClick from './user-behavior-click.vue';
+import UserBehaviorJSError from './user-behavior-js-error.vue';
+import UserBehaviorNetwork from './user-behavior-network.vue';
+import UserBehaviorPageView from './user-behavior-page-view.vue';
 import type { UserBehaviorManagement } from '~/src/typings/user-behavior';
 
 interface Props {
@@ -28,6 +35,8 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {});
+
+const monitorDrawerStore = useMonitorDrawerStore();
 
 const renderMeta: Record<UserBehaviorMetricsEnum, any> = {
   [UserBehaviorMetricsEnum.PageView]: {
@@ -61,8 +70,18 @@ const renderMeta: Record<UserBehaviorMetricsEnum, any> = {
   }
 };
 
-const formatTimestamp = (timestamp: number) => {
-  return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss');
+const handleClick = (userBehavior: UserBehaviorManagement.UserBehavior) => {
+  monitorDrawerStore.visible = true;
+  monitorDrawerStore.environmentInfo = {} as any;
+
+  switch (userBehavior.name) {
+    case UserBehaviorMetricsEnum.Network:
+      monitorDrawerStore.network = userBehavior.value as UserBehaviorManagement.NetworkMetrics;
+      break;
+
+    default:
+      break;
+  }
 };
 </script>
 
