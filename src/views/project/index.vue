@@ -48,15 +48,19 @@
 
 <script setup lang="tsx">
 import type { Ref } from 'vue';
-import { unref, onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, unref } from 'vue';
 import type { DataTableColumns, DataTableRowKey } from 'naive-ui';
-import { NTag, NPopconfirm, NButton, NPopover, NSpace } from 'naive-ui';
+import { NButton, NPopconfirm, NPopover, NSpace, NTag } from 'naive-ui';
 import { useClipboard } from '@/hooks';
 import { apiDeleteProject, apiDeleteProjects, apiGetAllProjects } from '~/src/service/api';
 import type { ModalType } from './components/project-action-modal.vue';
 import ProjectActionModal from './components/project-action-modal.vue';
 
 const { copyText } = useClipboard();
+
+const projectActionModalVisible = ref(false);
+const projectActionModalType = ref<ModalType>('add');
+const projectDataForEdit = ref<ProjectManagement.Project | null>(null);
 
 const tableLoading = ref(false);
 const projectList = ref<ProjectManagement.Project[]>([]);
@@ -130,10 +134,6 @@ const columns: Ref<DataTableColumns<ProjectManagement.Project>> = ref([
     }
   }
 ]) as Ref<DataTableColumns<ProjectManagement.Project>>;
-
-const projectActionModalVisible = ref(false);
-const projectActionModalType = ref<ModalType>('add');
-const projectDataForEdit = ref<ProjectManagement.Project | null>(null);
 
 async function refreshTable() {
   tableLoading.value = true;
